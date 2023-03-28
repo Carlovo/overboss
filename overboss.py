@@ -58,45 +58,43 @@ tiles_taken = set()
 tokens_taken = set()
 
 while 1 > 0:
-    user_input = input('Press enter to continue (input q to quit): ')
+    user_input = input('Press enter to continue (options: t/m/rt/rm/q): ')
     if user_input == 'q':
         break
-    elif user_input == 't':
+    elif user_input == 'rt':
         user_input = input('Which terrain tile would you like to return to the bag: ')
         if not user_input.isnumeric():
             print('Only numbers are accepted\n')
             continue
         input_int = int(user_input)
         if input_int > 67:
-            print('Number too big\n')
+            print('Number too big')
         elif input_int in tiles_taken:
             tiles_taken.remove(input_int)
             tiles.append(input_int)
             random.shuffle(tiles)
-            print('Done!\n')
+            print('Done!')
         else:
-            print('Number is not yet drawn\n')
-    elif user_input == 'm':
+            print('Number is not yet drawn')
+    elif user_input == 'rm':
         user_input = input('Which monster token would you like to return to the bag: ')
         if not user_input.isnumeric():
             print('Only numbers are accepted\n')
             continue
         input_int = int(user_input)
         if input_int > 67:
-            print('Number too big\n')
+            print('Number too big')
         elif input_int in tokens_taken:
             tokens_taken.remove(input_int)
             tokens.append(input_int)
             random.shuffle(tokens)
-            print('Done!\n')
+            print('Done!')
         else:
-            print('Number is not yet drawn\n')
-    else:
-        tile = tiles.pop()
-        token = tokens.pop()
+            print('Number is not yet drawn')
 
+    if user_input == '' or user_input == 't':
+        tile = tiles.pop()
         tiles_taken.add(tile)
-        tokens_taken.add(token)
 
         if tile < 5 * 12:
             type_no = tile // 12
@@ -136,6 +134,10 @@ while 1 > 0:
         else:
             print(tile, ' -  -', 'dungeon')
 
+    if user_input == '' or user_input == 'm':
+        token = tokens.pop()
+        tokens_taken.add(token)
+
         if token < 5 * 10:
             type_no = token // 10
             token_type = type_map[type_no]
@@ -156,4 +158,4 @@ while 1 > 0:
         else:
             print(token, ' -  -', 'portal')
 
-        print('')
+    print('')
