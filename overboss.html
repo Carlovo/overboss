@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OverbosS Shuffler</title>
+</head>
+
+<body style="width: 95vmin; margin: auto;">
+
+<table id="terrain-picker">
+  <thead>
+    <th>
+        Check 5 Terrain Types:
+    </th>
+  </thead>
+  <tbody>
+    <tr>
+      <td>
+        Forest (Kobold)
+      </td>
+      <td>
+        <input type="checkbox" id="terrain-Forest">
+      </td>
+    </tr>
+    <tr>
+      <td>
+        Graveyard (Skeleton)
+      </td>
+      <td>
+        <input type="checkbox" id="terrain-Graveyard">
+      </td>
+    </tr>
+    <tr>
+      <td>
+        Camp (Orc)
+      </td>
+      <td>
+        <input type="checkbox" id="terrain-Camp">
+      </td>
+    </tr>
+    <tr>
+      <td>
+        Cave (Dragon)
+      </td>
+      <td>
+        <input type="checkbox" id="terrain-Cave">
+      </td>
+    </tr>
+    <tr>
+      <td>
+        Swamp (Witch)
+      </td>
+      <td>
+        <input type="checkbox" id="terrain-Swamp">
+      </td>
+    </tr>
+    <tr>
+      <td>
+        Castle (Vampire)
+      </td>
+      <td>
+        <input type="checkbox" id="terrain-Castle">
+      </td>
+    </tr>
+    <tr>
+      <td>
+        Volcano (Elemental)
+      </td>
+      <td>
+        <input type="checkbox" id="terrain-Volcano">
+      </td>
+    </tr>
+    <tr>
+      <td>
+        Summoning Circle (Sorcerobe)
+      </td>
+      <td>
+        <input type="checkbox" id="terrain-Summoning Circle">
+      </td>
+    </tr>
+    <tr>
+      <td>
+        Cloud Island (Harpy)
+      </td>
+      <td>
+        <input type="checkbox" id="terrain-Cloud Island">
+      </td>
+    </tr>
+    <tr>
+      <td>
+        Desert (Sandworm)
+      </td>
+      <td>
+        <input type="checkbox" id="terrain-Desert">
+      </td>
+    </tr>
+    <tr>
+      <td>
+        Tower (Eye)
+      </td>
+      <td>
+        <input type="checkbox" id="terrain-Tower">
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <input type="button" value="Start Game" onclick="startGame()">
+      </td>
+    </tr>
+  </tbody>
+</table>
+<table id="play-area" style="display: none;">
+  <thead>
+    <th colspan="3">
+      Playing with
+    </th>
+  </thead>
+  <tbody>
+    <tr id="play-terrain-dungeon">
+      <td colspan="2">
+        Dungeon
+      </td>
+      <td>
+        8
+      </td>
+    </tr>
+    <tr id="play-terrain-0">
+      <td colspan="2">
+        Some Terrain (Some Monster)
+      </td>
+      <td>
+        12 (10)
+      </td>
+    </tr>
+    <tr id="play-terrain-1">
+      <td colspan="2">
+        Some Terrain (Some Monster)
+      </td>
+      <td>
+        12 (10)
+      </td>
+    </tr>
+    <tr id="play-terrain-2">
+      <td colspan="2">
+        Some Terrain (Some Monster)
+      </td>
+      <td>
+        12 (10)
+      </td>
+    </tr>
+    <tr id="play-terrain-3">
+      <td colspan="2">
+        Some Terrain (Some Monster)
+      </td>
+      <td>
+        12 (10)
+      </td>
+    </tr>
+    <tr id="play-terrain-4">
+      <td colspan="2">
+        Some Terrain (Some Monster)
+      </td>
+      <td>
+        12 (10)
+      </td>
+    </tr>
+    <tr id="play-miniboss">
+      <td colspan="2">
+        (Miniboss)
+      </td>
+      <td style="text-align: end;">
+        (6)
+      </td>
+    </tr>
+    <tr id="play-portal">
+      <td colspan="2">
+        (Portal)
+      </td>
+      <td style="text-align: end;">
+        (7)
+      </td>
+    </tr>
+    <tr id="play-crystal">
+      <td colspan="2">
+        (Crystal)
+      </td>
+      <td style="text-align: end;">
+        (5)
+      </td>
+    </tr>
+    <tr>
+      <td colspan="3">
+        <hr/>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        Tile
+      </td>
+      <td>
+        (Token)
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <input id="check-tile" type="checkbox" checked="true">
+      </td>
+      <td>
+        <input id="check-token" type="checkbox" checked="true">
+      </td>
+      <td>
+        <input type="button" value="Draw" onclick="drawCards()">
+      </td>
+    </tr>
+    <tr>
+      <td colspan="2">
+        <input id="text-return" type="text" onkeypress="checkReturn(event)">
+      </td>
+      <td>
+        <input type="button" value="Return" onclick="returnCard()">
+      </td>
+    </tr>
+    <tr>
+      <td colspan="3">
+        <p id="messenger">Latest Message</p>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="2"></td>
+      </td>
+      <td>
+        <input type="button" value="New Game" onclick="newGame()">
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+</body>
+
+<script>
+"use strict";
+
+const regularTypes = [
+  {"terrain": "Forest", "monster": "Kobold"},
+  {"terrain": "Graveyard", "monster": "Skeleton"},
+  {"terrain": "Camp", "monster": "Orc"},
+  {"terrain": "Cave", "monster": "Dragon"},
+  {"terrain": "Swamp", "monster": "Witch"},
+  {"terrain": "Castle", "monster": "Vampire"},
+  {"terrain": "Volcano", "monster": "Elemental"},
+  {"terrain": "Summoning Circle", "monster": "Sorcerobe"},
+  {"terrain": "Cloud Island", "monster": "Harpy"},
+  {"terrain": "Desert", "monster": "Sandworm"},
+  {"terrain": "Tower", "monster": "Eye"}
+];
+
+let terrainsInPlay = [];
+let drawPileTile = [];
+let drawPileToken = [];
+let tilesInPlay = [];
+let tokensInPlay = [];
+
+function shuffleArray(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+}
+
+function startGame() {
+  terrainsInPlay = [];
+  for (let terrainType of regularTypes) {
+    if (document.getElementById("terrain-" + terrainType["terrain"]).checked) {
+      terrainsInPlay.push(terrainType);
+    }
+  }
+  if (terrainsInPlay.length == 5) {
+    tilesInPlay = ["Dungeon"];
+    tokensInPlay = ["Portal", "Miniboss"];
+    drawPileTile = [];
+    drawPileToken = [];
+    for (let i of Array(5).keys()) {
+      const tile = terrainsInPlay[i]["terrain"];
+      const token = terrainsInPlay[i]["monster"];
+      document.getElementById("play-terrain-" + i).children[0].innerHTML = tile + " (" + token + ")";
+      tilesInPlay.push(tile);
+      tokensInPlay.push(token);
+      for (let i2 of Array(12).keys()) {
+        drawPileTile.push(tile);
+      }
+      tokensInPlay.push(tile + " Crystal");
+      drawPileToken.push(tile + " Crystal");
+      for (let i2 of Array(10).keys()) {
+        drawPileToken.push(token);
+      }
+    }
+    for (let i2 of Array(8).keys()) {
+      drawPileTile.push("Dungeon");
+    }
+    for (let i2 of Array(7).keys()) {
+      drawPileToken.push("Portal");
+    }
+    for (let i2 of Array(6).keys()) {
+      drawPileToken.push("Miniboss");
+    }
+    shuffleArray(drawPileTile);
+    shuffleArray(drawPileToken);
+    document.getElementById("messenger").innerHTML = "Welcome to new game!";
+    document.getElementById("terrain-picker").setAttribute("style", "display:none;");
+    document.getElementById("play-area").setAttribute("style", "display:block;");
+  } else {
+    alert("Please check exactly 5 types");
+  }
+}
+
+function drawCards() {
+  let drawString = "";
+  if (document.getElementById("check-tile").checked) {
+    drawString += drawPileTile.pop();
+  }
+  drawString += " ";
+  if (document.getElementById("check-token").checked) {
+    drawString += "(" + drawPileToken.pop() + ")"
+  }
+  document.getElementById("messenger").innerHTML = drawString;
+}
+
+function returnCard() {
+  const returnedText = document.getElementById("text-return").value.trim();
+  if (tilesInPlay.includes(returnedText)) {
+    drawPileTile.push(returnedText);
+    shuffleArray(drawPileTile);
+    document.getElementById("messenger").innerHTML = "Returned " + returnedText + " to tile pile.";
+  } else if (tokensInPlay.includes(returnedText)) {
+    drawPileToken.push(returnedText);
+    shuffleArray(drawPileToken);
+    document.getElementById("messenger").innerHTML = "Returned " + returnedText + " to token pile.";
+  } else {
+    alert("Unknown returned tile or token type: " + returnedText + ".");
+  }
+  document.getElementById("text-return").value = "";
+}
+
+function checkReturn(event) {
+  // Press enter => submit
+  if (event && event.keyCode == 13) {
+    returnCard();
+  }
+}
+
+function newGame() {
+  if (confirm("Abandon current game to set up a new one?")) {
+    document.getElementById("terrain-picker").setAttribute("style", "display:block;");
+    document.getElementById("play-area").setAttribute("style", "display:none;");
+  }
+}
+</script>
+
+</html>
