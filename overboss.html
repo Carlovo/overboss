@@ -235,6 +235,14 @@
     </tr>
   </tbody>
 </table>
+<details id="details-log" style="display: none;">
+  <summary>
+    Log
+  </summary>
+  <div id="details-log-lines">
+    Make a first draw!
+  </div>
+</details>
 
 </body>
 
@@ -260,6 +268,8 @@ let drawPileTile = [];
 let drawPileToken = [];
 let tilesInPlay = [];
 let tokensInPlay = [];
+let pileActionNo = 0;
+let pileActionLog = [];
 
 function shuffleArray(array) {
   for (let i = array.length - 1; i > 0; i--) {
@@ -306,12 +316,24 @@ function startGame() {
     }
     shuffleArray(drawPileTile);
     shuffleArray(drawPileToken);
+    pileActionNo = 0;
+    pileActionLog = [];
     document.getElementById("messenger").innerHTML = "Welcome to new game!";
+    document.getElementById("details-log-lines").innerHTML = "Make a first draw!"
     document.getElementById("terrain-picker").setAttribute("style", "display:none;");
     document.getElementById("play-area").setAttribute("style", "display:block;");
+    document.getElementById("details-log").setAttribute("style", "display:block;");
   } else {
     alert("Please check exactly 5 types");
   }
+}
+
+function updateGUI(message = "") {
+  pileActionNo += 1;
+  const numberedMessage = pileActionNo + ". " + message;
+  pileActionLog.unshift(numberedMessage);
+  document.getElementById("messenger").innerHTML = numberedMessage;
+  document.getElementById("details-log-lines").innerHTML = pileActionLog.join("</br>");
 }
 
 function drawCards() {
@@ -323,7 +345,7 @@ function drawCards() {
   if (document.getElementById("check-token").checked) {
     drawString += "(" + drawPileToken.pop() + ")"
   }
-  document.getElementById("messenger").innerHTML = drawString;
+  updateGUI(drawString);
 }
 
 function returnCard() {
@@ -331,11 +353,11 @@ function returnCard() {
   if (tilesInPlay.includes(returnedText)) {
     drawPileTile.push(returnedText);
     shuffleArray(drawPileTile);
-    document.getElementById("messenger").innerHTML = "Returned " + returnedText + " to tile pile.";
+    updateGUI("Returned " + returnedText + " to tile pile.");
   } else if (tokensInPlay.includes(returnedText)) {
     drawPileToken.push(returnedText);
     shuffleArray(drawPileToken);
-    document.getElementById("messenger").innerHTML = "Returned " + returnedText + " to token pile.";
+    updateGUI("Returned " + returnedText + " to token pile.");
   } else {
     alert("Unknown returned tile or token type: " + returnedText + ".");
   }
@@ -353,6 +375,7 @@ function newGame() {
   if (confirm("Abandon current game to set up a new one?")) {
     document.getElementById("terrain-picker").setAttribute("style", "display:block;");
     document.getElementById("play-area").setAttribute("style", "display:none;");
+    document.getElementById("details-log").setAttribute("style", "display:none;");
   }
 }
 </script>
