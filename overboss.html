@@ -11,7 +11,7 @@
 <table id="terrain-picker">
   <thead>
     <th>
-        Check 5 Terrain Types:
+      Check 5 Terrain Types:
     </th>
   </thead>
   <tbody>
@@ -121,76 +121,91 @@
       <td colspan="2">
         Dungeon
       </td>
-      <td>
-        8
+      <td style="text-align: end;">
+        1/8
       </td>
     </tr>
     <tr id="play-terrain-0">
       <td colspan="2">
         Some Terrain (Some Monster)
       </td>
-      <td>
-        12 (10)
+      <td style="text-align: end;">
+        1/12
+      </td>
+      <td style="text-align: end;">
+        (1/10)
       </td>
     </tr>
     <tr id="play-terrain-1">
       <td colspan="2">
         Some Terrain (Some Monster)
       </td>
-      <td>
-        12 (10)
+      <td style="text-align: end;">
+        1/12
+      </td>
+      <td style="text-align: end;">
+        (1/10)
       </td>
     </tr>
     <tr id="play-terrain-2">
       <td colspan="2">
         Some Terrain (Some Monster)
       </td>
-      <td>
-        12 (10)
+      <td style="text-align: end;">
+        11/12
+      </td>
+      <td style="text-align: end;">
+        (9/10)
       </td>
     </tr>
     <tr id="play-terrain-3">
       <td colspan="2">
         Some Terrain (Some Monster)
       </td>
-      <td>
-        12 (10)
+      <td style="text-align: end;">
+        1/12
+      </td>
+      <td style="text-align: end;">
+        (1/10)
       </td>
     </tr>
     <tr id="play-terrain-4">
       <td colspan="2">
         Some Terrain (Some Monster)
       </td>
-      <td>
-        12 (10)
+      <td style="text-align: end;">
+        12/12
+      </td>
+      <td style="text-align: end;">
+        (10/10)
       </td>
     </tr>
     <tr id="play-miniboss">
       <td colspan="2">
         (Miniboss)
       </td>
-      <td style="text-align: end;">
-        (6)
+      <td colspan="2" style="text-align: end;">
+        (1/6)
       </td>
     </tr>
     <tr id="play-portal">
       <td colspan="2">
         (Portal)
       </td>
-      <td style="text-align: end;">
-        (7)
+      <td colspan="2" style="text-align: end;">
+        (1/7)
       </td>
     </tr>
     <tr id="play-crystal">
       <td colspan="2">
         (Crystal)
       </td>
-      <td style="text-align: end;">
-        (5)
+      <td colspan="2" style="text-align: end;">
+        (1/5)
       </td>
     </tr>
     <tr>
-      <td colspan="3">
+      <td colspan="4">
         <hr/>
       </td>
     </tr>
@@ -209,7 +224,7 @@
       <td>
         <input id="check-token" type="checkbox" checked="true">
       </td>
-      <td>
+      <td colspan="2">
         <input type="button" value="Draw" onclick="drawCards()">
       </td>
     </tr>
@@ -217,19 +232,19 @@
       <td colspan="2">
         <input id="text-return" type="text" onkeypress="checkReturn(event)">
       </td>
-      <td>
+      <td colspan="2">
         <input type="button" value="Return" onclick="returnCard()">
       </td>
     </tr>
     <tr>
-      <td colspan="3">
+      <td colspan="4">
         <p id="messenger">Latest Message</p>
       </td>
     </tr>
     <tr>
       <td colspan="2"></td>
       </td>
-      <td>
+      <td colspan="2">
         <input type="button" value="New Game" onclick="newGame()">
       </td>
     </tr>
@@ -263,11 +278,10 @@ const regularTypes = [
   {"terrain": "Tower", "monster": "Eye"}
 ];
 
-let terrainsInPlay = [];
 let drawPileTile = [];
 let drawPileToken = [];
-let tilesInPlay = [];
-let tokensInPlay = [];
+let tilesInPlay = new Map();
+let tokensInPlay = new Map();
 let pileActionNo = 0;
 let pileActionLog = [];
 
@@ -279,39 +293,53 @@ function shuffleArray(array) {
 }
 
 function startGame() {
-  terrainsInPlay = [];
+  let terrainsInPlay = [];
   for (let terrainType of regularTypes) {
     if (document.getElementById("terrain-" + terrainType["terrain"]).checked) {
       terrainsInPlay.push(terrainType);
     }
   }
   if (terrainsInPlay.length == 5) {
-    tilesInPlay = ["Dungeon"];
-    tokensInPlay = ["Portal", "Miniboss"];
+    tilesInPlay = new Map();
+    const dungeonCounter = document.getElementById("play-terrain-dungeon").children[1];
+    dungeonCounter.innerHTML = "8/8"
+    tilesInPlay.set("Dungeon", dungeonCounter);
+    tokensInPlay = new Map();
+    const portalCounter = document.getElementById("play-portal").children[1];
+    portalCounter.innerHTML = "(7/7)"
+    tokensInPlay.set("Portal", portalCounter);
+    const minibossCounter = document.getElementById("play-miniboss").children[1];
+    minibossCounter.innerHTML = "(6/6)"
+    tokensInPlay.set("Miniboss", minibossCounter);
+    const crystalCounter = document.getElementById("play-crystal").children[1];
+    crystalCounter.innerHTML = "(5/5)"
     drawPileTile = [];
     drawPileToken = [];
     for (let i of Array(5).keys()) {
       const tile = terrainsInPlay[i]["terrain"];
       const token = terrainsInPlay[i]["monster"];
-      document.getElementById("play-terrain-" + i).children[0].innerHTML = tile + " (" + token + ")";
-      tilesInPlay.push(tile);
-      tokensInPlay.push(token);
-      for (let i2 of Array(12).keys()) {
+      const terrainElement = document.getElementById("play-terrain-" + i);
+      terrainElement.children[0].innerHTML = tile + " (" + token + ")";
+      terrainElement.children[1].innerHTML = "12/12";
+      terrainElement.children[2].innerHTML = "(10/10)";
+      tilesInPlay.set(tile, terrainElement.children[1]);
+      tokensInPlay.set(token, terrainElement.children[2]);
+      for (let {} of Array(12).keys()) {
         drawPileTile.push(tile);
       }
-      tokensInPlay.push(tile + " Crystal");
+      tokensInPlay.set(tile + " Crystal", crystalCounter);
       drawPileToken.push(tile + " Crystal");
-      for (let i2 of Array(10).keys()) {
+      for (let {} of Array(10).keys()) {
         drawPileToken.push(token);
       }
     }
-    for (let i2 of Array(8).keys()) {
+    for (let {} of Array(8).keys()) {
       drawPileTile.push("Dungeon");
     }
-    for (let i2 of Array(7).keys()) {
+    for (let {} of Array(7).keys()) {
       drawPileToken.push("Portal");
     }
-    for (let i2 of Array(6).keys()) {
+    for (let {} of Array(6).keys()) {
       drawPileToken.push("Miniboss");
     }
     shuffleArray(drawPileTile);
@@ -339,24 +367,38 @@ function updateGUI(message = "") {
 function drawCards() {
   let drawString = "";
   if (document.getElementById("check-tile").checked) {
-    drawString += drawPileTile.pop();
+    const drawnTile = drawPileTile.pop();
+    const tileCounterElement = tilesInPlay.get(drawnTile);
+    const tileFraction = tileCounterElement.innerHTML.split("/").map(num => parseInt(num));
+    tileCounterElement.innerHTML = (tileFraction[0] - 1) + "/" + tileFraction[1];
+    drawString += drawnTile;
   }
   drawString += " ";
   if (document.getElementById("check-token").checked) {
-    drawString += "(" + drawPileToken.pop() + ")"
+    const drawnToken = drawPileToken.pop();
+    const tokenCounterElement = tokensInPlay.get(drawnToken);
+    const tokenFraction = tokenCounterElement.innerHTML.slice(1, -1).split("/").map(num => parseInt(num));
+    tokenCounterElement.innerHTML = "(" + (tokenFraction[0] - 1) + "/" + tokenFraction[1] + ")";
+    drawString += "(" + drawnToken + ")"
   }
   updateGUI(drawString);
 }
 
 function returnCard() {
   const returnedText = document.getElementById("text-return").value.trim();
-  if (tilesInPlay.includes(returnedText)) {
+  if (tilesInPlay.has(returnedText)) {
     drawPileTile.push(returnedText);
     shuffleArray(drawPileTile);
+    const tileCounterElement = tilesInPlay.get(returnedText);
+    const tileFraction = tileCounterElement.innerHTML.split("/").map(num => parseInt(num));
+    tileCounterElement.innerHTML = (tileFraction[0] + 1) + "/" + tileFraction[1];
     updateGUI("Returned " + returnedText + " to tile pile.");
-  } else if (tokensInPlay.includes(returnedText)) {
+  } else if (tokensInPlay.has(returnedText)) {
     drawPileToken.push(returnedText);
     shuffleArray(drawPileToken);
+    const tokenCounterElement = tokensInPlay.get(returnedText);
+    const tokenFraction = tokenCounterElement.innerHTML.slice(1, -1).split("/").map(num => parseInt(num));
+    tokenCounterElement.innerHTML = "(" + (tokenFraction[0] + 1) + "/" + tokenFraction[1] + ")";
     updateGUI("Returned " + returnedText + " to token pile.");
   } else {
     alert("Unknown returned tile or token type: " + returnedText + ".");
